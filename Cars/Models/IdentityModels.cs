@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -25,9 +26,42 @@ namespace Cars.Models
         {
         }
 
+        static ApplicationDbContext()
+        {
+            Database.SetInitializer(new ApplicationDbContextInitializer());
+        }
+
+        public DbSet<Model> Models { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Car> Cars { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+    }
+
+    internal class ApplicationDbContextInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
+    {
+        protected override void Seed(ApplicationDbContext db)
+        {
+            db.Models.AddRange(new []{
+                new Model {Name = "Lifan"},
+                new Model {Name = "Ford"},
+                new Model {Name = "Audi"},
+                new Model {Name = "Kia"},
+                new Model {Name = "Skoda"},
+            });
+
+            db.Colors.AddRange(new[]{
+                new Color {Name = "Red"},
+                new Color {Name = "Blue"},
+                new Color {Name = "Green"},
+                new Color {Name = "Black"},
+                new Color {Name = "White"},
+            });
+
+            db.SaveChanges();
         }
     }
 }
